@@ -4,15 +4,15 @@ class PeoplePayload {
   final int count;
   final String next;
   final String previous;
-  final List<People> people;
+  final List<PeoplePayloadItem> people;
 
   PeoplePayload({this.count, this.next, this.previous, this.people});
 }
 
 @immutable
-class People {
+class PeoplePayloadItem {
   final String name;
   final String birthYear;
 
-  People({this.name, this.birthYear});
+  PeoplePayloadItem({this.name, this.birthYear});
 }

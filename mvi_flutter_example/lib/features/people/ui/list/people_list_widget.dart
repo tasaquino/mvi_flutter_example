@@ -3,16 +3,16 @@ import 'package:meta/meta.dart';
 import 'package:mvi_flutter_example/features/common_widgets/loading_widget.dart';
 import 'package:mvi_flutter_example/features/people/domain/model/people.dart';
 import 'package:mvi_flutter_example/features/people/ui/detail/detail_screen.dart';
-import 'package:mvi_flutter_example/features/people/ui/list/list_item_people_widget.dart';
+import 'package:mvi_flutter_example/features/people/ui/list/people_list_item_widget.dart';
 
-class ListPeopleWidget extends StatelessWidget {
+class PeopleListWidget extends StatelessWidget {
   static final peopleListKey = Key("people_list_key");
   static final snackKey = Key("snackbar_key");
 
   final bool loading;
   final List<People> people;
 
-  const ListPeopleWidget({
+  const PeopleListWidget({
     Key key,
     @required this.loading,
     @required this.people,
@@ -28,7 +28,7 @@ class ListPeopleWidget extends StatelessWidget {
         itemCount: people.length,
         itemBuilder: (context, index) {
           final p = people[index];
-          return ListItemPeopleWidget(
+          return PeopleListItemWidget(
               people: p,
               onTap: () {
                 Navigator.of(context)

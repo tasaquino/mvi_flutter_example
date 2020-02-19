@@ -25,7 +25,7 @@ class PeopleRepositoryImpl implements PeopleRepository {
       next: data['next'],
       previous: data['previous'],
       people: results.map((result) {
-        return People(name: result['name'], birthYear: result['birth_year']);
+        return PeoplePayloadItem(name: result['name'], birthYear: result['birth_year']);
       }).toList(),
     );
   }

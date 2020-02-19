@@ -3,19 +3,18 @@ import 'package:mvi_flutter_example/dependency_injector.dart';
 import 'package:mvi_flutter_example/features/people/presentation/people_list_presenter.dart';
 import 'package:mvi_flutter_example/features/people/presentation/people_list_state.dart';
 import 'package:mvi_flutter_example/features/people/presentation/people_list_view.dart';
-import 'package:mvi_flutter_example/features/people/ui/list/list_people_widget.dart';
-import 'package:mvi_flutter_example/mvi_core.dart';
+import 'package:mvi_flutter_example/features/people/ui/list/people_list_widget.dart';
 
-class ListPeoplePage extends StatefulWidget {
-  final MviPresenter<PeopleListState> Function(PeopleListView) initPresenter;
+class PeopleListPage extends StatefulWidget {
+  final PeopleListPresenter Function(PeopleListView) initPresenter;
 
-  ListPeoplePage({Key key, this.initPresenter}) : super(key: key);
+  PeopleListPage({Key key, this.initPresenter}) : super(key: key);
 
   @override
-  _ListPeoplePageState createState() => _ListPeoplePageState();
+  _PeopleListPageState createState() => _PeopleListPageState();
 }
 
-class _ListPeoplePageState extends State<ListPeoplePage> with PeopleListView {
+class _PeopleListPageState extends State<PeopleListPage> with PeopleListView {
   PeopleListPresenter presenter;
 
   @override
@@ -24,8 +23,7 @@ class _ListPeoplePageState extends State<ListPeoplePage> with PeopleListView {
         ? widget.initPresenter(this)
         : PeopleListPresenter(
             view: this, interactor: Injector.of(context).peopleInteractor);
-    presenter.bind();
-    presenter.loadPeopleList();
+    presenter.triggerLoad();
     super.didChangeDependencies();
   }
 
@@ -39,7 +37,7 @@ class _ListPeoplePageState extends State<ListPeoplePage> with PeopleListView {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<PeopleListState>(
-      stream: presenter,
+      stream: presenter.stream,
       initialData: presenter.latest,
       builder: (context, peopleState) {
         return Scaffold(
@@ -47,7 +45,7 @@ class _ListPeoplePageState extends State<ListPeoplePage> with PeopleListView {
             title: Text("Star Wars: People"),
           ),
           body: Center(
-              child: ListPeopleWidget(
+              child: PeopleListWidget(
             loading: peopleState.data?.showLoading ?? true,
             people: peopleState.data?.peopleList ?? List(),
           )), // This trailing comma makes auto-formatting nicer for build methods.

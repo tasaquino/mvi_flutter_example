@@ -7,51 +7,61 @@ abstract class MviDisposable {
   Future tearDown();
 }
 
-abstract class MviView implements MviDisposable {}
+abstract class MviView<VS> implements MviDisposable {
+  final VS initialState;
 
-class MviPresenter<VS> extends Stream<VS> implements MviDisposable {
-  final BehaviorSubject<VS> _subject;
-  final List<StreamSubscription<dynamic>> subscriptions = [];
+  MviView({
+    @required this.initialState,
+  });
+}
 
-  MviPresenter({
-    @required Stream<VS> stream,
-    VS initialModel,
-  }) : _subject = _createSubject<VS>(stream, initialModel);
+abstract class MviPartialState {}
 
-  VS get latest => _subject.value;
+abstract class MviStateViewModel<PS extends MviPartialState,
+VS extends MviStateViewModel<PS, VS>> {
+  VS reducer(PS partialState);
+}
 
-  void bind() {}
+class MviPresenter<
+PS extends MviPartialState,
+VS extends MviStateViewModel<PS, VS>,
+V extends MviView<VS>>
+    implements MviDisposable {
+  final StreamController<VS> controller = StreamController();
+  final V view;
+  VS latest;
 
-  static _createSubject<VS>(
-    Stream<VS> model,
-    VS initialState,
-  ) {
-    StreamSubscription<VS> subscription;
-    BehaviorSubject<VS> _subject;
-    void onListen() {
-      subscription = model.listen(_subject.add,
-          onError: _subject.addError, onDone: _subject.close);
-    }
+  get viewAttached => view != null;
 
-    void onCancel() => subscription.cancel();
+  get stream => controller.stream;
 
-    _subject = initialState == null
-        ? BehaviorSubject<VS>(
-            onListen: onListen, onCancel: onCancel, sync: true)
-        : BehaviorSubject<VS>.seeded(initialState,
-            onListen: onListen, onCancel: onCancel);
-
-    return _subject;
+  MviPresenter(this.view) {
+    if (this.view == null) throw ViewNotAttachedException();
+    latest = view.initialState;
   }
 
-  @override
-  StreamSubscription<VS> listen(void Function(VS event) onData,
-      {Function onError, void Function() onDone, bool cancelOnError}) {
-    return _subject.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  subscribeIntents(List<Stream<PS>> actions) {
+    return viewAttached
+        ? controller.addStream(merge(actions, view.initialState))
+        : throw ViewNotAttachedException();
   }
+
+  Stream<VS> merge(List<Stream<PS>> actions, VS initialState) =>
+      Rx.merge(actions).distinct().scan((state, partialState, _) {
+        final reducedState = state == null
+            ? initialState.reducer(partialState)
+            : state.reducer(partialState);
+
+        latest = reducedState;
+        return reducedState;
+      });
 
   @mustCallSuper
-  Future tearDown() => Future.wait(
-      [_subject.close()]..addAll(subscriptions.map((s) => s.cancel())));
+  Future tearDown() => controller.close();
+}
+
+class ViewNotAttachedException implements Exception {
+  @override
+  String toString() =>
+      'ViewNotAttachedException: View not attached';
 }
