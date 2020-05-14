@@ -12,7 +12,7 @@ class PeopleRepositoryImpl implements PeopleRepository {
   @override
   Stream<PeoplePayload> peopleList() {
     return Stream.fromFuture(
-            _networkingConfig.dio.get('https://swapi.co/api/people'))
+            _networkingConfig.dio.get('https://swapi.dev/api/people'))
         .transform(ErrorHandlerTransformer())
         .map((result) => mapPeople(result.data));
   }
