@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DetailPeoplePage extends StatefulWidget {
-  DetailPeoplePage({Key key, this.title}) : super(key: key);
+  DetailPeoplePage({Key key, this.title = ''}) : super(key: key);
 
   final String title;
 
@@ -10,8 +10,6 @@ class DetailPeoplePage extends StatefulWidget {
 }
 
 class _DetailPeoplePageState extends State<DetailPeoplePage> {
-  //DetailPeoplePagePresenter presenter;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

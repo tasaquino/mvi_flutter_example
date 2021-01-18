@@ -32,13 +32,16 @@ class PeopleListWidget extends StatelessWidget {
               people: p,
               onTap: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => DetailPeoplePage()))
+                    .push(MaterialPageRoute(
+                        builder: (_) => DetailPeoplePage(
+                              title: p.name,
+                            )))
                     .then((people) {
                   if (people is People) {
                     final snackBar = SnackBar(
                         key: snackKey,
                         duration: Duration(seconds: 2),
-                        content: Text("Details of: ${people.name}"));
+                        content: Text("TODO: Details of: ${people.name}"));
 
                     Scaffold.of(context).showSnackBar(snackBar);
                   }
