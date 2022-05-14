@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:mvi_flutter_example/features/common_widgets/loading_widget.dart';
 import 'package:mvi_flutter_example/features/people/domain/model/people.dart';
 import 'package:mvi_flutter_example/features/people/ui/detail/detail_screen.dart';
@@ -42,8 +41,7 @@ class PeopleListWidget extends StatelessWidget {
                         key: snackKey,
                         duration: Duration(seconds: 2),
                         content: Text("TODO: Details of: ${people.name}"));
-
-                    Scaffold.of(context).showSnackBar(snackBar);
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 });
               });

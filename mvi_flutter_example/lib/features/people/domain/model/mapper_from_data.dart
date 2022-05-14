@@ -4,7 +4,7 @@ import 'package:mvi_flutter_example/features/people/domain/model/people.dart'
 
 extension PeopleMapper on List<PeoplePayloadItem> {
   List<domain.People> toDomainModelList() {
-    final list = List<domain.People>();
+    final list = <domain.People>[];
     this.forEach((p) {
       list.add(domain.People(name: p.name, birthYear: p.birthYear));
     });

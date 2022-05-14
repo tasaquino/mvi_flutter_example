@@ -47,7 +47,7 @@ class _PeopleListPageState extends State<PeopleListPage> with PeopleListView {
           body: Center(
               child: PeopleListWidget(
             loading: peopleState.data?.showLoading ?? true,
-            people: peopleState.data?.peopleList ?? List(),
+            people: peopleState.data?.peopleList ?? [],
           )), // This trailing comma makes auto-formatting nicer for build methods.
         );
       },

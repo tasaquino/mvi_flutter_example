@@ -47,14 +47,14 @@ V extends MviView<VS>>
   }
 
   Stream<VS> merge(List<Stream<PS>> actions, VS initialState) =>
-      Rx.merge(actions).distinct().scan((state, partialState, _) {
+      Rx.merge(actions).distinct().scan((state, partialState, i) {
         final reducedState = state == null
             ? initialState.reducer(partialState)
             : state.reducer(partialState);
 
         latest = reducedState;
         return reducedState;
-      });
+      }, initialState);
 
   @mustCallSuper
   Future tearDown() => controller.close();

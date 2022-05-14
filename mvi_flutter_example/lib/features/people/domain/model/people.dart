@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:mvi_flutter_example/features/people/data/model/people_payload.dart';
 
 @immutable
 class People {
